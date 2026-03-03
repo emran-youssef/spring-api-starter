@@ -32,10 +32,11 @@ public class ProductController {
         } else{
             products = productRepository.findAllWithCategory();
         }
-
         return products.stream().map(productMapper::productToProductDto).toList();
 
         }
+
+
 
 
 

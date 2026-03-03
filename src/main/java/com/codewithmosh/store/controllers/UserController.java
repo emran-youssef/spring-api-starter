@@ -1,35 +1,29 @@
 package com.codewithmosh.store.controllers;
 
+import com.codewithmosh.store.dtos.CreateUserRequest;
 import com.codewithmosh.store.dtos.UserDto;
-import com.codewithmosh.store.mappers.ProductMapper;
 import com.codewithmosh.store.mappers.UserMapper;
-import com.codewithmosh.store.repositories.CategoryRepository;
-import com.codewithmosh.store.repositories.ProductRepository;
 import com.codewithmosh.store.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Set;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/users")
-public class HomeController {
+public class UserController {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private ProductRepository productRepository;
-    private ProductMapper productMapper;
-    private CategoryRepository categoryRepository;
-
-
 
     @GetMapping()
     public Iterable<UserDto> getAllUsers(
-          @RequestParam(name = "sort", required = false, defaultValue = "") String sortBy
-    ){
+          @RequestParam(name = "sort", required = false, defaultValue = "") String sortBy){
 
         if(!Set.of("name", "email").contains(sortBy)){
             sortBy = "id";
@@ -47,9 +41,20 @@ public class HomeController {
         if(user == null){
             return ResponseEntity.notFound().build();
         }
-           //var userDto = new UserDto(user.getId(), user.getName(), user.getEmail());
-           //var userDto = userMapper.userToUserDto(user);
            return ResponseEntity.ok(userMapper.userToUserDto(user));
+        //var userDto = new UserDto(user.getId(), user.getName(), user.getEmail());
+        //var userDto = userMapper.userToUserDto(user);
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDto> createUser(@RequestBody CreateUserRequest request, UriComponentsBuilder uriBuilder){
+
+        var user  = userMapper.toEntity(request);
+        userRepository.save(user);
+        var userDto = userMapper.userToUserDto(user);
+
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
+        return ResponseEntity.created(uri).body(userDto);
     }
 
 
