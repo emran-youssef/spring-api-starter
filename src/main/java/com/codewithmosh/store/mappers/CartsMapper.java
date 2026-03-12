@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CartsMapper {
-    CartsDto toDto(Carts carts);
 
+    CartsDto toDto(Carts carts);
 
     @Mapping(target = "productName", source = "product.name")
     @Mapping(target = "productPrice", source = "product.price")
@@ -19,4 +19,3 @@ public interface CartsMapper {
 }
 
 
-//بكرا حاول احذف addToCart ارجع ابنيها من جديد

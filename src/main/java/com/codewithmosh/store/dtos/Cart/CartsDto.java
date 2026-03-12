@@ -4,6 +4,7 @@ package com.codewithmosh.store.dtos.Cart;
 import com.codewithmosh.store.entities.CartItems;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,4 +12,5 @@ import java.util.UUID;
 public class CartsDto {
     private UUID id;
     private Set<CartItemsDto> items;
+    private BigDecimal totalPrice;
 }

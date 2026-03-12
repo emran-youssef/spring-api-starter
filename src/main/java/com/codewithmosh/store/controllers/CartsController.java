@@ -4,17 +4,20 @@ package com.codewithmosh.store.controllers;
 import com.codewithmosh.store.dtos.Cart.AddItemToCartRquest;
 import com.codewithmosh.store.dtos.Cart.CartItemsDto;
 import com.codewithmosh.store.dtos.Cart.CartsDto;
+import com.codewithmosh.store.dtos.Cart.UpdateCartItemRequest;
 import com.codewithmosh.store.entities.CartItems;
 import com.codewithmosh.store.entities.Carts;
 import com.codewithmosh.store.mappers.CartsMapper;
 import com.codewithmosh.store.repositories.CartsRepository;
 import com.codewithmosh.store.repositories.ProductRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -47,7 +50,6 @@ public class CartsController {
         }
 
        return ResponseEntity.ok(cartsMapper.toDto(cart));
-
     }
 
     @PostMapping("/{cartId}/items")
@@ -79,6 +81,33 @@ public class CartsController {
         cartsRepository.save(cart);
         var cartItemDto = cartsMapper.toCartItemsDto(cartItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItemDto);
+    }
+
+    @PutMapping("/{cartId}/items/{itemId}")
+    public ResponseEntity<?> updateItem(
+            @PathVariable UUID cartId,
+            @PathVariable Long itemId,
+            @Valid @RequestBody UpdateCartItemRequest request
+    ){
+        var cart = cartsRepository.findById(cartId).orElse(null);
+        if(cart == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of("error", "Cart not found")
+        );
+
+        var cartItem = cart.getItems().stream()
+                .filter(item -> item.getId().equals(itemId))
+                .findFirst()
+                .orElse(null);
+
+        if(cartItem == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of("error", "Item not found")
+        );
+        cartItem.setQuantity(request.getQuantity());
+        cartsRepository.save(cart);
+
+        var cartItemDto = cartsMapper.toCartItemsDto(cartItem);
+        return ResponseEntity.ok(cartItemDto);
+
     }
 
 }

@@ -11,5 +11,4 @@ public class CartItemsDto {
     private BigDecimal productPrice;
     private BigDecimal totalPrice;
     private Integer quantity;
-
 }
