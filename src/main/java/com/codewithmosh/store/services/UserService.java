@@ -1,49 +1,40 @@
 package com.codewithmosh.store.services;
 
 
-import com.codewithmosh.store.entities.Category;
-import com.codewithmosh.store.entities.Product;
-import com.codewithmosh.store.entities.User;
-import com.codewithmosh.store.repositories.CategoryRepository;
-import com.codewithmosh.store.repositories.ProductRepository;
 import com.codewithmosh.store.repositories.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.math.BigDecimal;
+import java.util.Collections;
 
-@Component
+@Service
 @AllArgsConstructor
-public class UserService {
+//The user loader for authenticaiton
+public class UserService implements UserDetailsService {
+
     private final UserRepository userRepository;
-    private final ProductRepository productRepository;
-    private final CategoryRepository CategoryRepository;
 
+    @Override
+    //Tells Spring Security HOW to find a user from your database
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = userRepository.findByEmail(email).orElseThrow
+                (() -> new UsernameNotFoundException("User Not Found"));
 
-
-    public void addUser(){
-       var user =  User.builder()
-                .name("Ali Mohammad")
-                .email("ali@gmail.com")
-                .password("0000").build();
-        userRepository.save(user);
+        // if user is found we have to return a UserDetails
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.emptyList()
+        );
     }
-
-
-    @Transactional
-    public void addProduct(){
-        var category = CategoryRepository.findById((byte) 2).orElseThrow();
-
-        var product = Product.builder()
-                .name("Sofa Chair")
-                .category(category)
-                .description("Comfortable and stylish sofa chair, Black color with a Audio Speaker")
-                .price(BigDecimal.valueOf(299.99)).build();
-
-        productRepository.save(product);
-    }
-
 
 
 }

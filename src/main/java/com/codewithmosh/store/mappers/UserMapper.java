@@ -1,10 +1,10 @@
 package com.codewithmosh.store.mappers;
 
-import com.codewithmosh.store.dtos.ChangePasswordRequest;
-import com.codewithmosh.store.dtos.CreateUserRequest;
-import com.codewithmosh.store.dtos.UpdateUserRequest;
+import com.codewithmosh.store.dtos.User.ChangePasswordRequest;
+import com.codewithmosh.store.dtos.User.CreateUserRequest;
+import com.codewithmosh.store.dtos.User.UpdateUserRequest;
 import com.codewithmosh.store.entities.User;
-import com.codewithmosh.store.dtos.UserDto;
+import com.codewithmosh.store.dtos.User.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

@@ -1,7 +1,7 @@
 package com.codewithmosh.store.mappers;
 
-import com.codewithmosh.store.dtos.ProductDto;
-import com.codewithmosh.store.dtos.UpdateProductRequest;
+import com.codewithmosh.store.dtos.Product.ProductDto;
+import com.codewithmosh.store.dtos.Product.UpdateProductRequest;
 import com.codewithmosh.store.entities.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
