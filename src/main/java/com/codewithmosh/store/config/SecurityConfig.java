@@ -53,7 +53,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // SecurityFilterChain: Defines the security rules. Every incoming HTTP request passes through this filter chain.
         http
-
                 .sessionManagement(c ->
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Stateless session (token-based authentication)
 

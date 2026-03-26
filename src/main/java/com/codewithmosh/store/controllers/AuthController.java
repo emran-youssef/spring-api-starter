@@ -1,6 +1,8 @@
 package com.codewithmosh.store.controllers;
 
+import com.codewithmosh.store.dtos.JwtResponse;
 import com.codewithmosh.store.dtos.User.LoginUserRequest;
+import com.codewithmosh.store.services.JwtService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,10 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    @PostMapping("login")
-    public ResponseEntity<?> login(
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(
             @RequestBody @Valid LoginUserRequest request
     ){
         // Receives the request and delegates to Spring Security,
@@ -30,9 +33,10 @@ public class AuthController {
                         request.getPassword()
                 ));
 
-        return ResponseEntity.ok().body(
-                Map.of("succeed", "user logged in successfully")
-        );
+        var token = jwtService.generatesToken(request.getEmail());
+
+        return ResponseEntity.ok(new JwtResponse(token));
+
     }
 
     @ExceptionHandler(BadCredentialsException.class)
